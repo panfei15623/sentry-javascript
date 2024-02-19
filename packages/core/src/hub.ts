@@ -129,10 +129,10 @@ export class Hub implements HubInterface {
    * @inheritDoc
    */
   public bindClient(client?: Client): void {
-    const top = this.getStackTop();
-    top.client = client;
+    const top = this.getStackTop(); // 返回最后加入队列的hub
+    top.client = client; // 把 new BrowerClient() 实例 绑定到top上
     if (client && client.setupIntegrations) {
-      client.setupIntegrations();
+      client.setupIntegrations(); // 对defaultIntegrations默认集成或者自定义集成进行遍历，为客户端提供各种能力。
     }
   }
 
@@ -544,7 +544,7 @@ export function makeMain(hub: Hub): Hub {
  */
 export function getCurrentHub(): Hub {
   // Get main carrier (global for every environment)
-  const registry = getMainCarrier();
+  const registry = getMainCarrier(); // 看全局上是否已经挂载了__SENTRY__属性，没有就给全局赋一个初始值
 
   if (registry.__SENTRY__ && registry.__SENTRY__.acs) {
     const hub = registry.__SENTRY__.acs.getCurrentHub();
@@ -560,11 +560,13 @@ export function getCurrentHub(): Hub {
 
 function getGlobalHub(registry: Carrier = getMainCarrier()): Hub {
   // If there's no hub, or its an old API, assign a new one
+  // 如果没有控制中心在载体上，或者它的版本是老版本，就调用setHubOnCarrier设置新的
   if (!hasHubOnCarrier(registry) || getHubFromCarrier(registry).isOlderThan(API_VERSION)) {
     setHubOnCarrier(registry, new Hub());
   }
 
   // Return hub that lives on a global object
+  // 返回 hub，拿到当前控制中心
   return getHubFromCarrier(registry);
 }
 

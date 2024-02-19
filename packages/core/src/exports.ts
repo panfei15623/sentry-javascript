@@ -71,7 +71,7 @@ export function captureMessage(
  * @returns The generated eventId.
  */
 export function captureEvent(event: Event, hint?: EventHint): ReturnType<Hub['captureEvent']> {
-  return getCurrentHub().captureEvent(event, hint);
+  return getCurrentHub().captureEvent(event, hint); // 数据上报
 }
 
 /**

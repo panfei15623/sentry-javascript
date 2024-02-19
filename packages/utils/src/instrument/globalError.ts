@@ -17,6 +17,8 @@ export function addGlobalErrorInstrumentationHandler(handler: (data: HandlerData
   maybeInstrument(type, instrumentError);
 }
 
+// 这里对winodw.onerror 进行劫持，添加了triggerHandlers方法。
+// 当监听到onerror的时候，会调用triggerHandlers 方法根据类型’error'会到handlers中找到对应类型的callback方法，也就是_installGlobalOnErrorHandler的callback方法
 function instrumentError(): void {
   _oldOnErrorHandler = GLOBAL_OBJ.onerror;
 

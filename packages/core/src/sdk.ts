@@ -29,10 +29,10 @@ export function initAndBind<F extends Client, O extends ClientOptions>(
       });
     }
   }
-  const hub = getCurrentHub();
-  const scope = hub.getScope();
+  const hub = getCurrentHub(); // getCurrentHub-发布订阅器，获取当前控制中心 hub
+  const scope = hub.getScope(); // 创建 scope
   scope.update(options.initialScope);
 
-  const client = new clientClass(options);
-  hub.bindClient(client);
+  const client = new clientClass(options); // 实例化 BrowserClient，赋值给 client
+  hub.bindClient(client); // 将 client 绑定到 hub 上
 }

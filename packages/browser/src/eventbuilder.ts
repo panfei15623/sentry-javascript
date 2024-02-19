@@ -96,7 +96,7 @@ export function parseStackFrames(
   // Access and store the stacktrace property before doing ANYTHING
   // else to it because Opera is not very good at providing it
   // reliably in other circumstances.
-  const stacktrace = ex.stacktrace || ex.stack || '';
+  const stacktrace = ex.stacktrace || ex.stack || ''; // 获取当前的堆栈信息
 
   const popSize = getPopSize(ex);
 
@@ -188,9 +188,9 @@ export function eventFromMessage(
  */
 export function eventFromUnknownInput(
   stackParser: StackParser,
-  exception: unknown,
+  exception: unknown, // 错误信息
   syntheticException?: Error,
-  attachStacktrace?: boolean,
+  attachStacktrace?: boolean, // 用户在Sentry.init中设置的attachStacktrace，代表需要追踪错误堆栈
   isUnhandledRejection?: boolean,
 ): Event {
   let event: Event;

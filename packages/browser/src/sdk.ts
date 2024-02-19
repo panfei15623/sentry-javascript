@@ -25,12 +25,12 @@ import { defaultStackParser } from './stack-parsers';
 import { makeFetchTransport, makeXHRTransport } from './transports';
 
 export const defaultIntegrations = [
-  new CoreIntegrations.InboundFilters(),
-  new CoreIntegrations.FunctionToString(),
-  new TryCatch(),
-  new Breadcrumbs(),
-  new GlobalHandlers(),
-  new LinkedErrors(),
+  new CoreIntegrations.InboundFilters(), // 数据过滤器， 确定Sentry应该忽略哪些错误，配置此集成，直接使用ignoreErrors、 denyurl 和 allowurlsdk SDK
+  new CoreIntegrations.FunctionToString(), // 提供原始函数和方法名称
+  new TryCatch(), // 包装了 try/catch 块中的原始时间和事件 api (setTimeout、 setInterval、 requestAnimationFrame、 XMLHttpRequest) ，以处理异步异常
+  new Breadcrumbs(), // 包装了原生 api 来捕获面包屑，console、dom、fetch、history、xhr
+  new GlobalHandlers(), // 附加了全局处理程序来捕获未处理的异常和未处理的拒绝
+  new LinkedErrors(), // 配置链接 link 的错误
   new Dedupe(),
   new HttpContext(),
 ];
@@ -101,6 +101,8 @@ export function init(options: BrowserOptions = {}): void {
   if (options.defaultIntegrations === undefined) {
     options.defaultIntegrations = defaultIntegrations;
   }
+
+  // 前端代码发布版本号。用于关联错误和源代码版本
   if (options.release === undefined) {
     // This allows build tooling to find-and-replace __SENTRY_RELEASE__ to inject a release value
     if (typeof __SENTRY_RELEASE__ === 'string') {
@@ -126,8 +128,10 @@ export function init(options: BrowserOptions = {}): void {
     transport: options.transport || (supportsFetch() ? makeFetchTransport : makeXHRTransport),
   };
 
+  // 创建新 SDK 客户端实例并绑定到 hub 上
   initAndBind(BrowserClient, clientOptions);
 
+  // 是否开启自动会话追踪，开启后 sdk 将向 Sentry 发送 session
   if (options.autoSessionTracking) {
     startSessionTracking();
   }

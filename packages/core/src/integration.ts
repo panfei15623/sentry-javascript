@@ -100,6 +100,7 @@ export function setupIntegrations(client: Client, integrations: Integration[]): 
 }
 
 /** Setup a single integration.  */
+// 对集成进行遍历，执行setupOnce方法
 export function setupIntegration(client: Client, integration: Integration, integrationIndex: IntegrationIndex): void {
   integrationIndex[integration.name] = integration;
 

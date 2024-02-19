@@ -15,7 +15,7 @@ const STRIP_FRAME_REGEXP = /captureMessage|captureException/;
  *
  * StackFrames are returned in the correct order for Sentry Exception
  * frames and with Sentry SDK internal frames removed from the top and bottom
- *
+ * 抹平各个浏览器间对于错误堆栈的差异
  */
 export function createStackParser(...parsers: StackLineParser[]): StackParser {
   const sortedParsers = parsers.sort((a, b) => a[0] - b[0]).map(p => p[1]);
@@ -45,7 +45,7 @@ export function createStackParser(...parsers: StackLineParser[]): StackParser {
       }
 
       for (const parser of sortedParsers) {
-        const frame = parser(cleanedLine);
+        const frame = parser(cleanedLine); // 对当前的错误判断属于哪种浏览器内核，然后做不同的处理，抹平差异
 
         if (frame) {
           frames.push(frame);

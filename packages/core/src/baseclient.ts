@@ -540,6 +540,7 @@ export abstract class BaseClient<O extends ClientOptions> implements Client<O> {
 
   /**
    * Adds common information to events.
+   * 主要是为event事件添加通用的信息，包含了从options里获取的发布的版本号release，和环境environment，从作用域scope获取的面包屑breadcrumbs和上下文context等等
    *
    * The information includes release and environment from `options`,
    * breadcrumbs and context (extra, tags and user) from the scope.
@@ -628,9 +629,9 @@ export abstract class BaseClient<O extends ClientOptions> implements Client<O> {
    * by the SDK implementor.
    *
    *
-   * @param event The event to send to Sentry.
-   * @param hint May contain additional information about the original exception.
-   * @param scope A scope containing event metadata.
+   * @param event The event to send to Sentry. 发送给Sentry的事件
+   * @param hint May contain additional information about the original exception. 有关原始异常的其他信息
+   * @param scope A scope containing event metadata. 事件元数据的作用域
    * @returns A SyncPromise that resolves with the event or rejects in case event was/will not be send.
    */
   protected _processEvent(event: Event, hint: EventHint, scope?: Scope): PromiseLike<Event> {
@@ -669,7 +670,7 @@ export abstract class BaseClient<O extends ClientOptions> implements Client<O> {
           return prepared;
         }
 
-        const result = processBeforeSend(options, prepared, hint);
+        const result = processBeforeSend(options, prepared, hint); // 处理初始化时传入的beforeSend、beforeSendTransaction
         return _validateBeforeSendResult(result, beforeSendLabel);
       })
       .then(processedEvent => {
@@ -695,7 +696,7 @@ export abstract class BaseClient<O extends ClientOptions> implements Client<O> {
           };
         }
 
-        this.sendEvent(processedEvent, hint);
+        this.sendEvent(processedEvent, hint); // backend后端去发送事件
         return processedEvent;
       })
       .then(null, reason => {

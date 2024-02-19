@@ -11,6 +11,7 @@ const handlers: { [key in InstrumentHandlerType]?: InstrumentHandlerCallback[] }
 const instrumented: { [key in InstrumentHandlerType]?: boolean } = {};
 
 /** Add a handler function. */
+// 把type与callback传入到handlers中，当发生错误的时候，就会执行对应callback方法。
 export function addHandler(type: InstrumentHandlerType, handler: InstrumentHandlerCallback): void {
   handlers[type] = handlers[type] || [];
   (handlers[type] as InstrumentHandlerCallback[]).push(handler);
@@ -27,6 +28,7 @@ export function resetInstrumentationHandlers(): void {
 }
 
 /** Maybe run an instrumentation function, unless it was already called. */
+// 根据type类型去调用instrument方法，从而执行各种不同的方法
 export function maybeInstrument(type: InstrumentHandlerType, instrumentFn: () => void): void {
   if (!instrumented[type]) {
     instrumentFn();

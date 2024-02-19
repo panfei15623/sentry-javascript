@@ -45,6 +45,7 @@ export class GlobalHandlers implements Integration {
   /** JSDoc */
   public constructor(options?: GlobalHandlersIntegrations) {
     this.name = GlobalHandlers.id;
+    // 给_options设置onerror和onunhandledrejection默认值为true
     this._options = {
       onerror: true,
       onunhandledrejection: true,
@@ -100,6 +101,7 @@ function _installGlobalOnErrorHandler(): void {
 
     event.level = 'error';
 
+    // 进行数据上报
     hub.captureEvent(event, {
       originalException: error,
       mechanism: {
@@ -192,6 +194,7 @@ function _eventFromRejectionWithPrimitive(reason: Primitive): Event {
 
 /**
  * This function creates a stack from an old, error-less onerror handler.
+ * 添加错误类型
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function _eventFromIncompleteOnError(msg: any, url: any, line: any, column: any): Event {
@@ -224,6 +227,7 @@ function _eventFromIncompleteOnError(msg: any, url: any, line: any, column: any)
 
 /** JSDoc */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// 添加错误堆栈
 function _enhanceEventWithInitialFrame(event: Event, url: any, line: any, column: any): Event {
   // event.exception
   const e = (event.exception = event.exception || {});
